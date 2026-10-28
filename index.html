@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARASAKA // Sub-Net Cyberware Telemetry</title>
+    <title>ARASAKA // MK-SYSTEMS Cyberware Telemetry</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Share Tech Mono & Rajdhani -->
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <script>
@@ -38,36 +38,84 @@
         }
     </script>
     <style>
-        body { font-family: 'Rajdhani', sans-serif; background-color: #070709; }
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #070709;
+            background-image: 
+                radial-gradient(rgba(255, 0, 60, 0.08) 1px, transparent 1px),
+                linear-gradient(to right, rgba(20, 20, 25, 0.4) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(20, 20, 25, 0.4) 1px, transparent 1px);
+            background-size: 40px 40px, 20px 20px, 20px 20px;
+        }
         .font-tech { font-family: 'Share Tech Mono', monospace; }
+        
+        /* CRT Scanlines FX */
+        .scanlines {
+            position: relative;
+        }
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .box-glow-red {
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.2), inset 0 0 10px rgba(255, 0, 60, 0.05);
+        }
+        .clip-tech {
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+        }
+
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #0A0A0C; }
         ::-webkit-scrollbar-thumb { background: #FF003C; }
     </style>
 </head>
-<body class="h-full text-gray-200 bg-[#070709]">
+<body class="h-full text-gray-200 scanlines">
+
+    <!-- Top Corporate Ticker -->
+    <div class="bg-[#FF003C] text-black font-tech text-xs font-bold py-0.5 px-4 overflow-hidden whitespace-nowrap flex justify-between">
+        <span>⚠️ MK-SYSTEMS // ARASAKA SUB-NET TELEMETRY FEED // AUTHORIZED ACCESS ONLY</span>
+        <span id="live-clock">00:00:00 UTC</span>
+    </div>
 
     <!-- Top Navigation HUD -->
-    <header class="border-b border-red-900/60 bg-black/95 sticky top-0 z-50 px-4 py-3">
+    <header class="border-b border-arasaka-darkred bg-arasaka-black/95 backdrop-blur sticky top-0 z-50 px-4 py-3">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 bg-red-600/20 border border-[#FF003C] flex items-center justify-center font-tech font-bold text-[#FF003C] text-xl shadow-[0_0_10px_rgba(255,0,60,0.5)]">
-                    荒
+                <!-- Custom MK Tech Badge Logo -->
+                <div class="w-10 h-10 bg-arasaka-red/20 border-2 border-arasaka-red flex items-center justify-center font-tech font-bold text-white text-xl tracking-tighter shadow-[0_0_15px_rgba(255,0,60,0.6)] clip-tech">
+                    <span class="text-arasaka-red font-extrabold">MK</span>
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <span class="font-bold text-lg tracking-widest text-white">ARASAKA</span>
-                        <span class="text-xs font-tech bg-red-600/20 text-[#FF003C] px-1.5 py-0.5 border border-red-600/40">VITAL-OS v4.81</span>
+                        <span class="font-bold text-xl tracking-widest text-white">ARASAKA</span>
+                        <span class="text-xs font-tech bg-arasaka-red/20 text-arasaka-red px-2 py-0.5 border border-arasaka-red/40 rounded">MK-VITAL v4.81</span>
                     </div>
-                    <p class="text-xs font-tech text-gray-400">NETRUNNER TELEMETRY & SUB-SYSTEM MONITOR</p>
+                    <p class="text-xs font-tech text-gray-400">NETRUNNER TELEMETRY & SYSTEM MONITOR</p>
                 </div>
             </div>
+            
             <div class="flex items-center space-x-4">
-                <div class="flex items-center space-x-2 font-tech text-xs bg-[#121216] px-3 py-1.5 border border-[#2A2A35]">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
-                    <span class="text-emerald-400 font-bold" id="link-status-text">SECURE_ACTIVE</span>
+                <div class="flex items-center space-x-3 font-tech text-xs bg-arasaka-dark px-3 py-2 border border-arasaka-border clip-tech">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
+                    <div>
+                        <span class="text-gray-400 text-[9px] block">CONNECTION</span>
+                        <span class="text-emerald-400 font-bold" id="link-status-text">SECURE_ACTIVE</span>
+                    </div>
                 </div>
-                <button onclick="triggerOverloadSim()" class="px-3 py-1.5 bg-[#FF003C] hover:bg-red-700 text-white font-bold font-tech text-xs tracking-wider border border-red-400 shadow-[0_0_10px_rgba(255,0,60,0.6)]">
+
+                <div class="flex items-center space-x-2 font-tech text-xs bg-black/60 p-1 border border-arasaka-border">
+                    <button id="mode-sim" onclick="setStreamMode('sim')" class="px-3 py-1 bg-arasaka-red text-white font-bold transition">MOCK DYNAMICS</button>
+                    <button id="mode-ws" onclick="setStreamMode('ws')" class="px-3 py-1 text-gray-400 hover:text-white transition">LOCAL AGENT WS</button>
+                </div>
+
+                <button onclick="triggerOverloadSim()" class="px-4 py-2 bg-arasaka-red hover:bg-red-700 text-white font-bold font-tech text-xs tracking-wider border border-red-400 shadow-[0_0_15px_rgba(255,0,60,0.6)] clip-tech transition">
                     STRESS TEST
                 </button>
             </div>
@@ -77,98 +125,401 @@
     <!-- Main Content Grid -->
     <main class="max-w-7xl mx-auto p-4 space-y-4">
         
-        <!-- Metrics Row -->
+        <!-- Alert Banner -->
+        <div id="alert-banner" class="hidden bg-arasaka-red/20 border-l-4 border-arasaka-red p-3 flex items-center justify-between font-tech text-sm text-red-200 box-glow-red clip-tech">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="alert-triangle" class="w-5 h-5 text-arasaka-red animate-pulse"></i>
+                <span><strong class="text-white">WARNING:</strong> HIGH SYSTEM OVERLOAD DETECTED. ICE DEFENSE TRIGGERED. SANITIZING THREADS...</span>
+            </div>
+            <button onclick="dismissAlert()" class="text-xs text-gray-400 hover:text-white uppercase font-bold">[Dismiss]</button>
+        </div>
+
+        <!-- 4 Key Metric Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
-                <span class="text-xs font-tech text-gray-400">PROCESSOR UNIT</span>
-                <h3 class="text-lg font-bold text-white mb-2">NEURAL CPU CORE</h3>
-                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-cpu">42</span><span class="text-sm text-[#FF003C]">%</span></div>
-                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-cpu" class="h-full bg-[#FF003C] w-[42%] transition-all"></div></div>
+            <!-- CPU -->
+            <div class="bg-arasaka-card border border-arasaka-border p-4 clip-tech relative group hover:border-arasaka-red transition box-glow-red">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-[10px] font-tech text-gray-400 tracking-wider">PROCESSOR UNIT</span>
+                        <h3 class="text-base font-bold text-white tracking-wide">NEURAL CPU CORE</h3>
+                    </div>
+                    <i data-lucide="cpu" class="w-5 h-5 text-arasaka-red"></i>
+                </div>
+                <div class="flex items-baseline space-x-2 my-1">
+                    <span id="metric-cpu" class="text-3xl font-tech font-bold text-white">42</span>
+                    <span class="text-sm font-tech text-arasaka-red">%</span>
+                </div>
+                <div class="w-full bg-black h-1.5 border border-arasaka-border overflow-hidden">
+                    <div id="bar-cpu" class="h-full bg-arasaka-red transition-all duration-300" style="width: 42%;"></div>
+                </div>
+                <div class="mt-2 flex justify-between text-[11px] font-tech text-gray-400">
+                    <span>FREQ: <span class="text-gray-200">4.82 GHz</span></span>
+                    <span>TEMP: <span id="cpu-temp" class="text-gray-200">54°C</span></span>
+                </div>
             </div>
-            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
-                <span class="text-xs font-tech text-gray-400">MEMORY BUFFER</span>
-                <h3 class="text-lg font-bold text-white mb-2">CYBERWARE RAM</h3>
-                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-ram">61</span><span class="text-sm text-[#FF003C]">%</span></div>
-                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-ram" class="h-full bg-[#FF003C] w-[61%] transition-all"></div></div>
+
+            <!-- RAM -->
+            <div class="bg-arasaka-card border border-arasaka-border p-4 clip-tech relative group hover:border-arasaka-red transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-[10px] font-tech text-gray-400 tracking-wider">MEMORY BUFFER</span>
+                        <h3 class="text-base font-bold text-white tracking-wide">CYBERWARE RAM</h3>
+                    </div>
+                    <i data-lucide="database" class="w-5 h-5 text-arasaka-red"></i>
+                </div>
+                <div class="flex items-baseline space-x-2 my-1">
+                    <span id="metric-ram" class="text-3xl font-tech font-bold text-white">61</span>
+                    <span class="text-sm font-tech text-arasaka-red">%</span>
+                </div>
+                <div class="w-full bg-black h-1.5 border border-arasaka-border overflow-hidden">
+                    <div id="bar-ram" class="h-full bg-arasaka-red transition-all duration-300" style="width: 61%;"></div>
+                </div>
+                <div class="mt-2 flex justify-between text-[11px] font-tech text-gray-400">
+                    <span>USED: <span class="text-gray-200">19.5 GB</span></span>
+                    <span>TOTAL: <span class="text-gray-200">32.0 GB</span></span>
+                </div>
             </div>
-            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
-                <span class="text-xs font-tech text-gray-400">NETWATCH STREAM</span>
-                <h3 class="text-lg font-bold text-white mb-2">SUB-NET IO</h3>
-                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-net">128</span><span class="text-sm text-[#FF003C]">MB/s</span></div>
-                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-net" class="h-full bg-[#FF003C] w-[45%] transition-all"></div></div>
+
+            <!-- Network -->
+            <div class="bg-arasaka-card border border-arasaka-border p-4 clip-tech relative group hover:border-arasaka-red transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-[10px] font-tech text-gray-400 tracking-wider">NETWATCH STREAM</span>
+                        <h3 class="text-base font-bold text-white tracking-wide">SUB-NET IO</h3>
+                    </div>
+                    <i data-lucide="wifi" class="w-5 h-5 text-arasaka-red"></i>
+                </div>
+                <div class="flex items-baseline space-x-2 my-1">
+                    <span id="metric-net" class="text-3xl font-tech font-bold text-white">128</span>
+                    <span class="text-sm font-tech text-arasaka-red">MB/s</span>
+                </div>
+                <div class="w-full bg-black h-1.5 border border-arasaka-border overflow-hidden">
+                    <div id="bar-net" class="h-full bg-arasaka-red transition-all duration-300" style="width: 45%;"></div>
+                </div>
+                <div class="mt-2 flex justify-between text-[11px] font-tech text-gray-400">
+                    <span>IN: <span class="text-gray-200">94.2 MB/s</span></span>
+                    <span>OUT: <span class="text-gray-200">33.8 MB/s</span></span>
+                </div>
             </div>
-            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
-                <span class="text-xs font-tech text-gray-400">THERMAL CORE</span>
-                <h3 class="text-lg font-bold text-white mb-2">SYNAPTIC HEAT</h3>
-                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-temp">58</span><span class="text-sm text-[#FF003C]">°C</span></div>
-                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-temp" class="h-full bg-[#FF003C] w-[58%] transition-all"></div></div>
+
+            <!-- Thermal -->
+            <div class="bg-arasaka-card border border-arasaka-border p-4 clip-tech relative group hover:border-arasaka-red transition">
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <span class="text-[10px] font-tech text-gray-400 tracking-wider">THERMAL CORE</span>
+                        <h3 class="text-base font-bold text-white tracking-wide">SYNAPTIC HEAT</h3>
+                    </div>
+                    <i data-lucide="flame" class="w-5 h-5 text-arasaka-red"></i>
+                </div>
+                <div class="flex items-baseline space-x-2 my-1">
+                    <span id="metric-temp" class="text-3xl font-tech font-bold text-white">58</span>
+                    <span class="text-sm font-tech text-arasaka-red">°C</span>
+                </div>
+                <div class="w-full bg-black h-1.5 border border-arasaka-border overflow-hidden">
+                    <div id="bar-temp" class="h-full bg-arasaka-red transition-all duration-300" style="width: 58%;"></div>
+                </div>
+                <div class="mt-2 flex justify-between text-[11px] font-tech text-gray-400">
+                    <span>COOLANT: <span class="text-emerald-400">NOMINAL</span></span>
+                    <span>LIMIT: <span class="text-gray-200">95.0°C</span></span>
+                </div>
             </div>
         </div>
 
-        <!-- Graph & Terminal Grid -->
+        <!-- Chart & Implant Controls Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div class="lg:col-span-2 bg-[#18181F] border border-[#2A2A35] p-4 flex flex-col justify-between">
-                <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase mb-3">REAL-TIME TELEMETRY STREAM</h3>
-                <div class="relative h-64 w-full bg-black/50 border border-[#2A2A35] p-2">
+            <!-- Telemetry Graph -->
+            <div class="lg:col-span-2 bg-arasaka-card border border-arasaka-border p-4 clip-tech flex flex-col justify-between">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-arasaka-red animate-ping"></div>
+                        <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase">REAL-TIME TELEMETRY STREAM</h3>
+                    </div>
+                    <span class="text-xs font-tech text-arasaka-red">SAMPLING: 1000ms</span>
+                </div>
+                <div class="relative h-64 w-full bg-black/60 border border-arasaka-border p-2">
                     <canvas id="telemetryChart"></canvas>
                 </div>
             </div>
-            <div class="bg-[#18181F] border border-[#2A2A35] p-4 flex flex-col justify-between">
+
+            <!-- Implant Nodes Control Panel -->
+            <div class="bg-arasaka-card border border-arasaka-border p-4 clip-tech flex flex-col justify-between">
                 <div>
-                    <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase mb-3">NETWATCH CONSOLE LOG</h3>
-                    <div id="terminal-log" class="h-52 bg-black border border-[#2A2A35] p-2 font-tech text-[11px] overflow-y-auto space-y-1 text-gray-400">
-                        <div><span class="text-[#FF003C]">[00:00:01]</span> INITIALIZING ARASAKA TELEMETRY CORE...</div>
-                        <div><span class="text-emerald-400">[00:00:03]</span> LINK ESTABLISHED: MOCK DYNAMICS ACTIVE.</div>
+                    <div class="flex items-center justify-between mb-3 border-b border-arasaka-border pb-2">
+                        <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase flex items-center gap-2">
+                            <i data-lucide="zap" class="w-4 h-4 text-arasaka-red"></i> IMPLANT NODES
+                        </h3>
+                        <span class="text-xs font-tech text-emerald-400">4 ONLINE</span>
+                    </div>
+
+                    <div class="space-y-2 font-tech text-xs">
+                        <div class="bg-black/40 p-2 border border-arasaka-border flex items-center justify-between">
+                            <div>
+                                <div class="text-white font-bold">KEREZNIKOV SLOW-MO</div>
+                                <div class="text-[9px] text-gray-500">REFLEX BOOST NODE</div>
+                            </div>
+                            <button onclick="toggleNode('node1')" id="btn-node1" class="px-2.5 py-1 bg-arasaka-red/20 border border-arasaka-red text-arasaka-red hover:bg-arasaka-red hover:text-white transition">ACTIVE</button>
+                        </div>
+                        <div class="bg-black/40 p-2 border border-arasaka-border flex items-center justify-between">
+                            <div>
+                                <div class="text-white font-bold">SUBDERMAL ARMOR ICE</div>
+                                <div class="text-[9px] text-gray-500">HARDENED FIREWALL</div>
+                            </div>
+                            <button onclick="toggleNode('node2')" id="btn-node2" class="px-2.5 py-1 bg-arasaka-red/20 border border-arasaka-red text-arasaka-red hover:bg-arasaka-red hover:text-white transition">ACTIVE</button>
+                        </div>
+                        <div class="bg-black/40 p-2 border border-arasaka-border flex items-center justify-between">
+                            <div>
+                                <div class="text-white font-bold">OPTICAL CAMO PROCESSOR</div>
+                                <div class="text-[9px] text-gray-500">CLOAKING ALGORITHM</div>
+                            </div>
+                            <button onclick="toggleNode('node3')" id="btn-node3" class="px-2.5 py-1 bg-arasaka-red/20 border border-arasaka-red text-arasaka-red hover:bg-arasaka-red hover:text-white transition">ACTIVE</button>
+                        </div>
                     </div>
                 </div>
+
+                <button onclick="flushRAM()" class="mt-4 w-full py-2 bg-arasaka-dark border border-arasaka-red/40 hover:border-arasaka-red text-arasaka-red font-tech text-xs tracking-wider uppercase transition hover:bg-arasaka-red/10">
+                    FLUSH SYNAPTIC CACHE
+                </button>
+            </div>
+        </div>
+
+        <!-- Lower Grid: Process Manager & Terminal -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Process Manager Table -->
+            <div class="lg:col-span-2 bg-arasaka-card border border-arasaka-border p-4 clip-tech">
+                <div class="flex items-center justify-between mb-3 border-b border-arasaka-border pb-2">
+                    <div class="flex items-center space-x-2">
+                        <i data-lucide="list-tree" class="w-4 h-4 text-arasaka-red"></i>
+                        <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase">ACTIVE NEURAL THREADS & DAEMONS</h3>
+                    </div>
+                    <span class="text-xs font-tech text-gray-400">MANAGEMENT INTERFACE</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left font-tech text-xs">
+                        <thead>
+                            <tr class="border-b border-arasaka-border text-gray-400 bg-black/40">
+                                <th class="p-2">PID</th>
+                                <th class="p-2">PROCESS DAEMON</th>
+                                <th class="p-2">STATUS</th>
+                                <th class="p-2">CPU</th>
+                                <th class="p-2 text-right">ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="process-table-body" class="divide-y divide-arasaka-border/40 text-gray-300">
+                            <!-- JS Injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Netwatch Terminal Console -->
+            <div class="bg-arasaka-card border border-arasaka-border p-4 clip-tech flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2 border-b border-arasaka-border pb-2">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="terminal" class="w-4 h-4 text-arasaka-red"></i>
+                            <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase">NETWATCH LOG</h3>
+                        </div>
+                        <span class="w-2 h-2 rounded-full bg-arasaka-red animate-ping"></span>
+                    </div>
+                    <div id="terminal-log" class="h-44 bg-black/80 border border-arasaka-border p-2 font-tech text-[11px] overflow-y-auto space-y-1 text-gray-400">
+                        <div><span class="text-arasaka-red">[00:00:01]</span> MK-SYSTEMS TELEMETRY CORE ONLINE.</div>
+                        <div><span class="text-emerald-400">[00:00:02]</span> SUB-NET ENCRYPTION KEY SECURED.</div>
+                    </div>
+                </div>
+
+                <form onsubmit="handleConsoleSubmit(event)" class="mt-2 flex space-x-2">
+                    <span class="font-tech text-arasaka-red text-xs flex items-center">&gt;</span>
+                    <input type="text" id="console-input" placeholder="Type 'help', 'scan', 'purge'..." class="w-full bg-black/60 border border-arasaka-border px-2 py-1 font-tech text-xs text-white focus:outline-none focus:border-arasaka-red">
+                    <button type="submit" class="px-2 bg-arasaka-red/20 border border-arasaka-red text-arasaka-red font-tech text-xs hover:bg-arasaka-red hover:text-white">EXEC</button>
+                </form>
             </div>
         </div>
     </main>
 
+    <!-- App Script Logic -->
     <script>
         lucide.createIcons();
 
+        // Live Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+        }, 1000);
+
+        // Chart Setup
         const ctx = document.getElementById('telemetryChart').getContext('2d');
         const telemetryChart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: Array(15).fill(''),
                 datasets: [
-                    { label: 'CPU Load (%)', data: Array(15).fill(40), borderColor: '#FF003C', backgroundColor: 'rgba(255,0,60,0.1)', tension: 0.3, fill: true },
-                    { label: 'RAM Usage (%)', data: Array(15).fill(60), borderColor: '#00F0FF', tension: 0.3 }
+                    { label: 'CPU Load (%)', data: Array(15).fill(40), borderColor: '#FF003C', backgroundColor: 'rgba(255,0,60,0.1)', borderWidth: 2, tension: 0.3, fill: true },
+                    { label: 'RAM Usage (%)', data: Array(15).fill(60), borderColor: '#00F0FF', backgroundColor: 'transparent', borderWidth: 1.5, tension: 0.3 }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: false,
                 scales: {
-                    y: { min: 0, max: 100, grid: { color: '#2A2A35' }, ticks: { color: '#888' } },
+                    y: { min: 0, max: 100, grid: { color: '#2A2A35' }, ticks: { color: '#888', font: { family: 'Share Tech Mono' } } },
                     x: { grid: { display: false }, ticks: { display: false } }
-                }
+                },
+                plugins: { legend: { labels: { color: '#ccc', font: { family: 'Share Tech Mono', size: 11 } } } }
             }
         });
 
+        let streamMode = 'sim';
+        let ws = null;
+
+        const processes = [
+            { pid: '1042', name: 'mk_ice_daemon.exe', status: 'SECURE', cpu: '14.2%' },
+            { pid: '2809', name: 'netwatch_sniffer.node', status: 'ACTIVE', cpu: '8.1%' },
+            { pid: '4102', name: 'neural_sync_worker', status: 'RUNNING', cpu: '22.5%' },
+            { pid: '5190', name: 'sub_net_router.go', status: 'STABLE', cpu: '3.4%' }
+        ];
+
+        function renderProcesses() {
+            const tbody = document.getElementById('process-table-body');
+            tbody.innerHTML = processes.map((p, idx) => `
+                <tr class="hover:bg-arasaka-dark/50 transition">
+                    <td class="p-2 text-arasaka-red font-bold">${p.pid}</td>
+                    <td class="p-2 text-white">${p.name}</td>
+                    <td class="p-2"><span class="px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] border border-emerald-500/30">${p.status}</span></td>
+                    <td class="p-2">${p.cpu}</td>
+                    <td class="p-2 text-right">
+                        <button onclick="killProcess(${idx})" class="px-2 py-0.5 bg-red-900/30 border border-arasaka-red text-arasaka-red hover:bg-arasaka-red hover:text-white transition text-[10px]">KILL</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        renderProcesses();
+
+        function killProcess(idx) {
+            logTerminal(`[!] TERMINATED PROCESS: PID ${processes[idx].pid} (${processes[idx].name})`);
+            processes.splice(idx, 1);
+            renderProcesses();
+        }
+
+        function logTerminal(msg) {
+            const term = document.getElementById('terminal-log');
+            const time = new Date().toLocaleTimeString();
+            term.innerHTML += `<div><span class="text-arasaka-red">[${time}]</span> ${msg}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }
+
+        // Simulation
         setInterval(() => {
-            const cpu = Math.floor(Math.random() * 45) + 30;
-            const ram = Math.floor(Math.random() * 15) + 55;
+            if (streamMode === 'sim') {
+                const cpu = Math.floor(Math.random() * 45) + 30;
+                const ram = Math.floor(Math.random() * 15) + 55;
+                const net = Math.floor(Math.random() * 70) + 60;
+                const temp = Math.floor(Math.random() * 10) + 50;
+
+                updateMetrics(cpu, ram, net, temp);
+                pushChartData(cpu, ram);
+            }
+        }, 1000);
+
+        function updateMetrics(cpu, ram, net, temp) {
             document.getElementById('metric-cpu').innerText = cpu;
             document.getElementById('bar-cpu').style.width = cpu + '%';
             document.getElementById('metric-ram').innerText = ram;
             document.getElementById('bar-ram').style.width = ram + '%';
+            document.getElementById('metric-net').innerText = net;
+            document.getElementById('bar-net').style.width = Math.min(net, 100) + '%';
+            document.getElementById('metric-temp').innerText = temp;
+            document.getElementById('bar-temp').style.width = temp + '%';
+        }
 
+        function pushChartData(cpu, ram) {
             const data = telemetryChart.data;
             data.datasets[0].data.shift();
             data.datasets[0].data.push(cpu);
             data.datasets[1].data.shift();
             data.datasets[1].data.push(ram);
             telemetryChart.update();
-        }, 1000);
+        }
+
+        function setStreamMode(mode) {
+            streamMode = mode;
+            if (mode === 'ws') {
+                document.getElementById('mode-ws').className = 'px-3 py-1 bg-arasaka-red text-white font-bold transition';
+                document.getElementById('mode-sim').className = 'px-3 py-1 text-gray-400 hover:text-white transition';
+                initWebSocket();
+            } else {
+                document.getElementById('mode-sim').className = 'px-3 py-1 bg-arasaka-red text-white font-bold transition';
+                document.getElementById('mode-ws').className = 'px-3 py-1 text-gray-400 hover:text-white transition';
+                if (ws) ws.close();
+                document.getElementById('link-status-text').innerText = 'SECURE_ACTIVE';
+                logTerminal('[*] SWITCHED TO MOCK DYNAMICS.');
+            }
+        }
+
+        function initWebSocket() {
+            logTerminal('[*] CONNECTING TO LOCALHOST:8080...');
+            try {
+                ws = new WebSocket('ws://localhost:8080');
+                ws.onopen = () => {
+                    document.getElementById('link-status-text').innerText = 'LOCAL_HARDWARE_LINK';
+                    logTerminal('[+] WEBSOCKET LINK SECURED WITH HOST HARDWARE.');
+                };
+                ws.onmessage = (event) => {
+                    const d = JSON.parse(event.data);
+                    updateMetrics(d.cpu, d.ram, d.net, d.temp);
+                    pushChartData(d.cpu, d.ram);
+                };
+                ws.onerror = () => {
+                    logTerminal('[!] WS CONNECTION FAILED. Run agent.js locally.');
+                    setStreamMode('sim');
+                };
+            } catch (e) {
+                logTerminal('[!] ERROR: ' + e.message);
+                setStreamMode('sim');
+            }
+        }
+
+        function toggleNode(id) {
+            logTerminal(`[i] TOGGLED IMPLANT NODE: ${id.toUpperCase()}`);
+        }
+
+        function flushRAM() {
+            logTerminal('[*] FLUSHING SYNAPTIC CACHE & SANITIZING BUFFERS...');
+            setTimeout(() => logTerminal('[+] CACHE PURGED. EFFICIENCY RESTORED.'), 500);
+        }
 
         function triggerOverloadSim() {
-            document.getElementById('metric-cpu').innerText = '96';
-            document.getElementById('bar-cpu').style.width = '96%';
-            const term = document.getElementById('terminal-log');
-            term.innerHTML += `<div><span class="text-[#FF003C]">[!]</span> STRESS TEST OVERLOAD TRIGGERED.</div>`;
+            logTerminal('[!] MANUAL OVERLOAD STRESS TEST INITIATED.');
+            updateMetrics(96, 92, 240, 89);
+            document.getElementById('alert-banner').classList.remove('hidden');
+        }
+
+        function dismissAlert() {
+            document.getElementById('alert-banner').classList.add('hidden');
+            logTerminal('[*] THREAT LEVEL RESET.');
+        }
+
+        function handleConsoleSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('console-input');
+            const val = input.value.trim().toLowerCase();
+            if (!val) return;
+
+            logTerminal('> ' + val);
+            if (val === 'help') {
+                logTerminal('COMMANDS: scan, purge, status, clear');
+            } else if (val === 'scan') {
+                logTerminal('[*] SUB-NET ICE SCAN: 0 BREACHES.');
+            } else if (val === 'purge') {
+                flushRAM();
+            } else if (val === 'status') {
+                logTerminal('[*] ALL SYSTEMS NOMINAL.');
+            } else if (val === 'clear') {
+                document.getElementById('terminal-log').innerHTML = '';
+            } else {
+                logTerminal(`[?] UNKNOWN COMMAND: "${val}".`);
+            }
+            input.value = '';
         }
     </script>
 </body>
