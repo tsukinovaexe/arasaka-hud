@@ -6,13 +6,11 @@
     <title>ARASAKA // Sub-Net Cyberware Telemetry</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js for high-tech graphs -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Font: Share Tech Mono & Rajdhani -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
     <script>
@@ -28,8 +26,7 @@
                             dark: '#121216',
                             card: '#18181F',
                             border: '#2A2A35',
-                            accent: '#00F0FF',
-                            gold: '#E5A93C'
+                            accent: '#00F0FF'
                         }
                     },
                     fontFamily: {
@@ -40,102 +37,139 @@
             }
         }
     </script>
-
     <style>
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background-color: #070709;
-            background-image: 
-                radial-gradient(rgba(255, 0, 60, 0.08) 1px, transparent 1px),
-                linear-gradient(to right, rgba(20, 20, 25, 0.4) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(20, 20, 25, 0.4) 1px, transparent 1px);
-            background-size: 40px 40px, 20px 20px, 20px 20px;
-        }
-
-        .font-tech {
-            font-family: 'Share Tech Mono', monospace;
-        }
-
-        /* Scanline FX */
-        .scanlines {
-            position: relative;
-            overflow: hidden;
-        }
-        .scanlines::before {
-            content: " ";
-            display: block;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            z-index: 40;
-            background-size: 100% 4px, 6px 100%;
-            pointer-events: none;
-        }
-
-        .glow-red {
-            text-shadow: 0 0 10px rgba(255, 0, 60, 0.75);
-        }
-        .box-glow-red {
-            box-shadow: 0 0 15px rgba(255, 0, 60, 0.25), inset 0 0 15px rgba(255, 0, 60, 0.1);
-        }
-
-        ::-webkit-scrollbar {
-            width: 4px;
-            height: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0A0A0C;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FF003C;
-        }
+        body { font-family: 'Rajdhani', sans-serif; background-color: #070709; }
+        .font-tech { font-family: 'Share Tech Mono', monospace; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #0A0A0C; }
+        ::-webkit-scrollbar-thumb { background: #FF003C; }
     </style>
 </head>
-<body class="h-full text-gray-200 select-none overflow-x-hidden scanlines" id="body-container">
+<body class="h-full text-gray-200 bg-[#070709]">
 
     <!-- Top Navigation HUD -->
-    <header class="border-b border-arasaka-darkred/60 bg-arasaka-black/95 backdrop-blur sticky top-0 z-50 px-4 py-2.5">
+    <header class="border-b border-red-900/60 bg-black/95 sticky top-0 z-50 px-4 py-3">
         <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-            
-            <!-- Logo & Title -->
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 bg-arasaka-red/20 border border-arasaka-red flex items-center justify-center font-tech font-bold text-arasaka-red text-xl tracking-tighter shadow-[0_0_10px_rgba(255,0,60,0.5)]">
+                <div class="w-9 h-9 bg-red-600/20 border border-[#FF003C] flex items-center justify-center font-tech font-bold text-[#FF003C] text-xl shadow-[0_0_10px_rgba(255,0,60,0.5)]">
                     荒
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <span class="font-bold text-lg tracking-widest text-white uppercase">ARASAKA</span>
-                        <span class="text-xs font-tech bg-arasaka-red/20 text-arasaka-red px-1.5 py-0.5 border border-arasaka-red/40 rounded">VITAL-OS v4.81</span>
+                        <span class="font-bold text-lg tracking-widest text-white">ARASAKA</span>
+                        <span class="text-xs font-tech bg-red-600/20 text-[#FF003C] px-1.5 py-0.5 border border-red-600/40">VITAL-OS v4.81</span>
                     </div>
                     <p class="text-xs font-tech text-gray-400">NETRUNNER TELEMETRY & SUB-SYSTEM MONITOR</p>
                 </div>
             </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 font-tech text-xs bg-[#121216] px-3 py-1.5 border border-[#2A2A35]">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
+                    <span class="text-emerald-400 font-bold" id="link-status-text">SECURE_ACTIVE</span>
+                </div>
+                <button onclick="triggerOverloadSim()" class="px-3 py-1.5 bg-[#FF003C] hover:bg-red-700 text-white font-bold font-tech text-xs tracking-wider border border-red-400 shadow-[0_0_10px_rgba(255,0,60,0.6)]">
+                    STRESS TEST
+                </button>
+            </div>
+        </div>
+    </header>
 
-            <!-- Global Status & Threat Gauge -->
-            <div class="flex items-center space-x-6">
-                <!-- System Status -->
-                <div class="hidden sm:flex items-center space-x-3 font-tech text-xs bg-arasaka-dark px-3 py-1.5 border border-arasaka-border">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
-                    <div>
-                        <span class="text-gray-400 block text-[10px]">LINK STATUS</span>
-                        <span id="link-status-text" class="text-emerald-400 font-bold">SECURE_ACTIVE</span>
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto p-4 space-y-4">
+        
+        <!-- Metrics Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
+                <span class="text-xs font-tech text-gray-400">PROCESSOR UNIT</span>
+                <h3 class="text-lg font-bold text-white mb-2">NEURAL CPU CORE</h3>
+                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-cpu">42</span><span class="text-sm text-[#FF003C]">%</span></div>
+                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-cpu" class="h-full bg-[#FF003C] w-[42%] transition-all"></div></div>
+            </div>
+            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
+                <span class="text-xs font-tech text-gray-400">MEMORY BUFFER</span>
+                <h3 class="text-lg font-bold text-white mb-2">CYBERWARE RAM</h3>
+                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-ram">61</span><span class="text-sm text-[#FF003C]">%</span></div>
+                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-ram" class="h-full bg-[#FF003C] w-[61%] transition-all"></div></div>
+            </div>
+            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
+                <span class="text-xs font-tech text-gray-400">NETWATCH STREAM</span>
+                <h3 class="text-lg font-bold text-white mb-2">SUB-NET IO</h3>
+                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-net">128</span><span class="text-sm text-[#FF003C]">MB/s</span></div>
+                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-net" class="h-full bg-[#FF003C] w-[45%] transition-all"></div></div>
+            </div>
+            <div class="bg-[#18181F] border border-[#2A2A35] p-4">
+                <span class="text-xs font-tech text-gray-400">THERMAL CORE</span>
+                <h3 class="text-lg font-bold text-white mb-2">SYNAPTIC HEAT</h3>
+                <div class="text-3xl font-tech font-bold text-white mb-2"><span id="metric-temp">58</span><span class="text-sm text-[#FF003C]">°C</span></div>
+                <div class="w-full bg-black h-1.5 border border-[#2A2A35]"><div id="bar-temp" class="h-full bg-[#FF003C] w-[58%] transition-all"></div></div>
+            </div>
+        </div>
+
+        <!-- Graph & Terminal Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="lg:col-span-2 bg-[#18181F] border border-[#2A2A35] p-4 flex flex-col justify-between">
+                <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase mb-3">REAL-TIME TELEMETRY STREAM</h3>
+                <div class="relative h-64 w-full bg-black/50 border border-[#2A2A35] p-2">
+                    <canvas id="telemetryChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-[#18181F] border border-[#2A2A35] p-4 flex flex-col justify-between">
+                <div>
+                    <h3 class="font-bold text-sm text-white font-tech tracking-wider uppercase mb-3">NETWATCH CONSOLE LOG</h3>
+                    <div id="terminal-log" class="h-52 bg-black border border-[#2A2A35] p-2 font-tech text-[11px] overflow-y-auto space-y-1 text-gray-400">
+                        <div><span class="text-[#FF003C]">[00:00:01]</span> INITIALIZING ARASAKA TELEMETRY CORE...</div>
+                        <div><span class="text-emerald-400">[00:00:03]</span> LINK ESTABLISHED: MOCK DYNAMICS ACTIVE.</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </main>
 
-                <!-- Threat Meter -->
-                <div class="flex items-center space-x-3 bg-arasaka-dark px-3 py-1.5 border border-arasaka-red/30">
-                    <i data-lucide="shield-alert" class="w-5 h-5 text-arasaka-red animate-bounce"></i>
-                    <div>
-                        <div class="text-[10px] font-tech text-gray-400 flex justify-between">
-                            <span>ICE DEFENSE</span>
-                            <span id="threat-level-num" class="text-arasaka-red font-bold font-tech">18%</span>
-                        </div>
-                        <div class="w-28 h-2 bg-gray-900 border border-arasaka-border overflow-hidden mt-0.5">
-                            <div id="threat-bar" class="h-full bg-arasaka-red transition-all duration-300" style="width: 18%;"></div>
-                        </div>
-                    </div>
-                </div>
+    <script>
+        lucide.createIcons();
 
-                <!-- Controls -->
-                <div class="flex items-center space-x-2">
-                    <button id="btn-sound" onclick="toggleAudio()" title="Toggle Cyber Audio Synthesizer" class="p-2 bg-arasaka-card border border-arasaka-border hover:border-arasaka-red text
+        const ctx = document.getElementById('telemetryChart').getContext('2d');
+        const telemetryChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(15).fill(''),
+                datasets: [
+                    { label: 'CPU Load (%)', data: Array(15).fill(40), borderColor: '#FF003C', backgroundColor: 'rgba(255,0,60,0.1)', tension: 0.3, fill: true },
+                    { label: 'RAM Usage (%)', data: Array(15).fill(60), borderColor: '#00F0FF', tension: 0.3 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: 0, max: 100, grid: { color: '#2A2A35' }, ticks: { color: '#888' } },
+                    x: { grid: { display: false }, ticks: { display: false } }
+                }
+            }
+        });
+
+        setInterval(() => {
+            const cpu = Math.floor(Math.random() * 45) + 30;
+            const ram = Math.floor(Math.random() * 15) + 55;
+            document.getElementById('metric-cpu').innerText = cpu;
+            document.getElementById('bar-cpu').style.width = cpu + '%';
+            document.getElementById('metric-ram').innerText = ram;
+            document.getElementById('bar-ram').style.width = ram + '%';
+
+            const data = telemetryChart.data;
+            data.datasets[0].data.shift();
+            data.datasets[0].data.push(cpu);
+            data.datasets[1].data.shift();
+            data.datasets[1].data.push(ram);
+            telemetryChart.update();
+        }, 1000);
+
+        function triggerOverloadSim() {
+            document.getElementById('metric-cpu').innerText = '96';
+            document.getElementById('bar-cpu').style.width = '96%';
+            const term = document.getElementById('terminal-log');
+            term.innerHTML += `<div><span class="text-[#FF003C]">[!]</span> STRESS TEST OVERLOAD TRIGGERED.</div>`;
+        }
+    </script>
+</body>
+</html>
