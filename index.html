@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-black text-gray-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARASAKA // Sub-Net Cyberware Telemetry</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for high-tech graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Font: Share Tech Mono & Rajdhani -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        arasaka: {
+                            red: '#FF003C',
+                            darkred: '#80001C',
+                            crimson: '#D90429',
+                            black: '#0A0A0C',
+                            dark: '#121216',
+                            card: '#18181F',
+                            border: '#2A2A35',
+                            accent: '#00F0FF',
+                            gold: '#E5A93C'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['"Share Tech Mono"', 'monospace'],
+                        sans: ['"Rajdhani"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #070709;
+            background-image: 
+                radial-gradient(rgba(255, 0, 60, 0.08) 1px, transparent 1px),
+                linear-gradient(to right, rgba(20, 20, 25, 0.4) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(20, 20, 25, 0.4) 1px, transparent 1px);
+            background-size: 40px 40px, 20px 20px, 20px 20px;
+        }
+
+        .font-tech {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* Scanline FX */
+        .scanlines {
+            position: relative;
+            overflow: hidden;
+        }
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            z-index: 40;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .glow-red {
+            text-shadow: 0 0 10px rgba(255, 0, 60, 0.75);
+        }
+        .box-glow-red {
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.25), inset 0 0 15px rgba(255, 0, 60, 0.1);
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0C;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FF003C;
+        }
+    </style>
+</head>
+<body class="h-full text-gray-200 select-none overflow-x-hidden scanlines" id="body-container">
+
+    <!-- Top Navigation HUD -->
+    <header class="border-b border-arasaka-darkred/60 bg-arasaka-black/95 backdrop-blur sticky top-0 z-50 px-4 py-2.5">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 bg-arasaka-red/20 border border-arasaka-red flex items-center justify-center font-tech font-bold text-arasaka-red text-xl tracking-tighter shadow-[0_0_10px_rgba(255,0,60,0.5)]">
+                    荒
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-lg tracking-widest text-white uppercase">ARASAKA</span>
+                        <span class="text-xs font-tech bg-arasaka-red/20 text-arasaka-red px-1.5 py-0.5 border border-arasaka-red/40 rounded">VITAL-OS v4.81</span>
+                    </div>
+                    <p class="text-xs font-tech text-gray-400">NETRUNNER TELEMETRY & SUB-SYSTEM MONITOR</p>
+                </div>
+            </div>
+
+            <!-- Global Status & Threat Gauge -->
+            <div class="flex items-center space-x-6">
+                <!-- System Status -->
+                <div class="hidden sm:flex items-center space-x-3 font-tech text-xs bg-arasaka-dark px-3 py-1.5 border border-arasaka-border">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" id="status-indicator"></span>
+                    <div>
+                        <span class="text-gray-400 block text-[10px]">LINK STATUS</span>
+                        <span id="link-status-text" class="text-emerald-400 font-bold">SECURE_ACTIVE</span>
+                    </div>
+                </div>
+
+                <!-- Threat Meter -->
+                <div class="flex items-center space-x-3 bg-arasaka-dark px-3 py-1.5 border border-arasaka-red/30">
+                    <i data-lucide="shield-alert" class="w-5 h-5 text-arasaka-red animate-bounce"></i>
+                    <div>
+                        <div class="text-[10px] font-tech text-gray-400 flex justify-between">
+                            <span>ICE DEFENSE</span>
+                            <span id="threat-level-num" class="text-arasaka-red font-bold font-tech">18%</span>
+                        </div>
+                        <div class="w-28 h-2 bg-gray-900 border border-arasaka-border overflow-hidden mt-0.5">
+                            <div id="threat-bar" class="h-full bg-arasaka-red transition-all duration-300" style="width: 18%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex items-center space-x-2">
+                    <button id="btn-sound" onclick="toggleAudio()" title="Toggle Cyber Audio Synthesizer" class="p-2 bg-arasaka-card border border-arasaka-border hover:border-arasaka-red text
